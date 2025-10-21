@@ -2,52 +2,46 @@ import java.util.LinkedHashMap;
 
 public class Main {
     public static void main(String[] args) {
-        String mellanrum1 = ("__________________________________________________________________________________________________________________");
-        char[] alphabetet = {
-                '_', 'E', 'A', 'N', 'T', 'R', 'S', 'I', 'L',
-                'D', 'O', 'M', 'K', '.', 'G', 'U', ',', 'H',
-                'F', 'V', 'Ä', 'Ö', 'Å', '-', 'P', 'J', '!',
-                '?', 'Y', 'C', '"', '3', 'B', '\'', '1', '2',
-                '4', ':', '0', '5', '6', ';', '(', '7', '8',
-                '9', ')', '+', '=', '/', '@', '&', '%', '*',
-                '<', '>', '[', ']', '{', '}', '|', '\\', 'Q',
-                'W', '§', '½', 'X', 'Z', '#', '^' // 70 ord/tecken
-        };
+        // Basically importing the common variables from the class CommonVariables
+        CommonVariables commons = new CommonVariables();
 
-        Humaninput ca = new Humaninput(alphabetet);
+        // Createing a object of HumanInput
+        Humaninput ca = new Humaninput();
         int[][] inPt = ca.collectInput();
 
-        Incrypting rr = new Incrypting(inPt, alphabetet);
+        // Createing a object that of Encrypting and giveing it the values from
+        // HumanInput
+        Encrypting rr = new Encrypting(inPt);
         int[][] incryptedOutPt = rr.calculate();
 
-        // För att snygga upp Terminalen
+        // To make the terminal less clutterd
         for (int i = 0; i < 2; i++) {
-            System.out.println(mellanrum1);
+            System.out.println(commons.spaceing1);
         }
 
-        // Skapar en LinkedHashMap för att lätt mata in ett Integer värde för att få ut
-        // en Character
+        // Createing a LinkedHashMap for converting the Values to readeable characters
         LinkedHashMap<Integer, Character> iTA = new LinkedHashMap<>();
-        for (int i = 0; i < alphabetet.length; i++) {
-            iTA.put(i, alphabetet[i]);
+        for (int i = 0; i < commons.alphabet.length; i++) {
+            iTA.put(i, commons.alphabet[i]);
         }
 
-        // Översätter siffror till bokstäver
+        // The step that actually turns the values to readeable characters
         char[] incryptedCharacterChar = new char[incryptedOutPt[1].length];
         for (int i = 0; i < incryptedOutPt[1].length; i++) {
             incryptedCharacterChar[i] = iTA.get(incryptedOutPt[1][i]);
         }
 
-        System.out.println("Den krypterade texten = ");
+        System.out.println("The Encrypted Or Decrypted Message = ");
         for (int i = 0; i < incryptedCharacterChar.length - 1; i++) {
             System.out.print(incryptedCharacterChar[i]);
         }
         System.out.println(incryptedCharacterChar[incryptedCharacterChar.length - 1]);
 
-        // För att snygga upp Terminalen
+        // To make the terminal less clutterd
         for (int i = 0; i < 2; i++) {
-            System.out.println(mellanrum1);
+            System.out.println(commons.spaceing1);
         }
+
         System.out.println("Nya Seeden om du vill forsätta skriva");
         for (int i = 0; i < (incryptedOutPt[0].length - 1); i++) {
             if (incryptedOutPt[0][i] > 9) {
