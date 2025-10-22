@@ -13,25 +13,25 @@ public class Encrypting {
 
     public int[][] calculate() {
 
-        // in inPt 0 = switchValues on the 4 defferent rotors 1 = Rotor positions 2 =
-        // the inputed words turned to values
+        // in inPt 0 = switchValues on the 4 different rotors 1 = Rotor positions 2 =
+        // the inputted words turned to values
 
-        RotorSwitchScedule rotSwitch = new RotorSwitchScedule();
+        RotorSwitchSchedule rotSwitch = new RotorSwitchSchedule();
         CommonVariables commons = new CommonVariables();
 
         int alphabetLength = 70;
         int alphabetMin1 = alphabetLength - 1;
 
-        // The switch scedule values
-        int[] switchScedulevalue = inPt[0];
+        // The switch schedule values
+        int[] switchScheduleValue = inPt[0];
 
         // The Rotor Positions
         int[] rP = inPt[1];
 
         // The message in Integer form
-        int[] incryptOutpt = new int[inPt[2].length];
+        int[] unEncryptedInPt = new int[inPt[2].length];
         int i = 0;
-        System.out.println("The Inputed Words To The Encrypted Ones");
+        System.out.println("The Inputted Words To The Encrypted Ones");
         while (i < inPt[2].length) {
 
             rP[0] += 3;
@@ -53,40 +53,40 @@ public class Encrypting {
             }
 
             // There exists four rotors but eight outputs, Two outputs are usage for
-            // inputting. 8 + 2 = 10 There for rotorOutpt is ten long
-            int[] rotorOutpt = new int[10];
+            // inputting. 8 + 2 = 10 There for rotorOutput is ten long
+            int[] rotorOutput = new int[10];
 
-            rotorOutpt[0] = inPt[2][i];
+            rotorOutput[0] = inPt[2][i];
             // Rotor 1, 2 och 3 in
             for (int o = 1, p = 0; o < 5 && p < 4; o++, p++) {
-                rotorOutpt[o] = (rotSwitch.rotSwitchScedule[switchScedulevalue[p]][(rotorOutpt[p] + rP[p])
+                rotorOutput[o] = (rotSwitch.rotSwitchSchedule[switchScheduleValue[p]][(rotorOutput[p] + rP[p])
                         % alphabetLength]
                         + rP[p])
                         % alphabetLength;
             }
 
             // deflector
-            rotorOutpt[5] = deflector[rotorOutpt[4]];
+            rotorOutput[5] = deflector[rotorOutput[4]];
 
             // Rotor 1, 2 och 3 deflected
             for (int o = 6, p = 3; o < 10 && p > -1; o++, p--) {
-                rotorOutpt[o] = ((rotSwitch.rotSwitchScedule[switchScedulevalue[p]][((rotorOutpt[(o - 1)] - rP[p])
+                rotorOutput[o] = ((rotSwitch.rotSwitchSchedule[switchScheduleValue[p]][((rotorOutput[(o - 1)] - rP[p])
                         + alphabetLength)
                         % alphabetLength] - rP[p]) + alphabetLength) % alphabetLength;
             }
 
-            incryptOutpt[i] = rotorOutpt[9];
+            unEncryptedInPt[i] = rotorOutput[9];
 
             // Printing out the unencrypted to encrypted for debugging purposes
-            System.out.print("| " + commons.alphabet[inPt[2][i]] + " -> " + commons.alphabet[rotorOutpt[9]] + " ");
+            System.out.print("| " + commons.alphabet[inPt[2][i]] + " -> " + commons.alphabet[rotorOutput[9]] + " ");
 
             i++;
         }
         // To make visual space
         System.out.println("|");
 
-        // Packageing the useful information for sendOf
-        int[][] sendOf = { rP, incryptOutpt };
+        // Packaging the useful information for sendOf
+        int[][] sendOf = { rP, unEncryptedInPt };
 
         return sendOf;
     }

@@ -2,9 +2,9 @@ import java.util.Scanner;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
-public class Humaninput {
+public class HumanInput {
 
-    public Humaninput() {
+    public HumanInput() {
 
     }
 
@@ -19,17 +19,17 @@ public class Humaninput {
             aTI.put(commons.alphabet[i], i);
         }
 
-        // To make the terminal less clutterd
+        // To make the terminal less cluttered
         for (int i = 0; i < 2; i++) {
-            System.out.println(commons.spaceing1);
+            System.out.println(commons.spacing1);
         }
 
-        // Message to User how to operate the Encryptor
+        // Message to User how to operate the Encrypting program
         String[] seedMsg = {
-                commons.spaceing1, commons.spaceing1,
-                "Seed Inputting Structure Is Made Up Of Two Digits For Each Specific Input Variant. 0-8 Is Used For Switch Scedules. 9-16 Is Used For Rotor Start Positions",
+                commons.spacing1, commons.spacing1,
+                "Seed Inputting Structure Is Made Up Of Two Digits For Each Specific Input Variant. 0-8 Is Used For Switch Schedules. 9-16 Is Used For Rotor Start Positions",
                 "For An Example The Seed May Look This ->  /1/5/3/23417/567  Or Like This -> 0105030234170567",
-                "You Can Either Use Zero Or Slash To Mark An Empty Slot", " ", commons.spaceing1, commons.spaceing1,
+                "You Can Either Use Zero Or Slash To Mark An Empty Slot", " ", commons.spacing1, commons.spacing1,
                 "The Possible Choices For Switch Schedules are 1-20. And The Possible Choices For Rotor Positions Are 1-70",
                 " ",
                 "Input Seed -->"
@@ -45,13 +45,23 @@ public class Humaninput {
         String answer = yesNo.nextLine();
         String answerBig = answer.toUpperCase();
         char[] answerChar = answerBig.toCharArray();
-        AutoSeedGen asg = new AutoSeedGen();
+
+        int[] seedMaking = new int[commons.seedDivided];
+        SeedEncode asg = new SeedEncode(seedMaking);
 
         char[] seedIn;
-        int[][] seedDecOtPt;
+        int[][] decodedSeedOutPt;
         Scanner seedInPt = new Scanner(System.in);
         //
         if (!answer.trim().isEmpty() && answerChar[0] == 'Y') {
+
+            // Generating the values
+            for (int i = 0; i < commons.seedDivided / 2; i++) {
+                seedMaking[i] = (int) (Math.random() * commons.switchScheduleAmount) + 1;
+            }
+            for (int i = commons.seedDivided / 2; i < commons.seedDivided; i++) {
+                seedMaking[i] = (int) (Math.random() * commons.alphabetLength) + 1;
+            }
 
             char[] autoSeed = asg.generate();
             System.out.println("The Auto Generated Seed --> ");
@@ -64,26 +74,28 @@ public class Humaninput {
             for (int i = 6; i < 11; i++) {
                 System.out.println(seedMsg[i]);
             }
+
             // The Scanner collecting the seed
             String seedCollected = seedInPt.nextLine();
 
-            // The seed is made in to an charArray to be checked, if actuall seed then it
+            // The seed is made in to an charArray to be checked, if actual seed then it
             // will be sent to seedDecode
             seedIn = seedCollected.toCharArray();
 
             // If The User just hit enter they will automatically get the standard base seed
             if (seedCollected.trim().isEmpty()) {
-                seedIn = new char[] { '0', '1', '0', '5', '0', '3', '0', '2', '3', '4', '1', '7', '0', '5', '6', '7' };
-                System.out.println("0105030234170567");
+                String standardSeed = "0105030234170567";
+                seedIn = standardSeed.toCharArray();
+                System.out.println(standardSeed);
             }
         }
 
-        // Createing an object of SeedDecode and giveing it the seed
+        // Creating an object of SeedDecode and giving it the seed
         SeedDecode sd = new SeedDecode(seedIn);
-        seedDecOtPt = sd.decode();
+        decodedSeedOutPt = sd.decode();
 
-        // To make the terminal less clutterd and to send a message to the user
-        String[] textMsg = { commons.spaceing1, commons.spaceing1, "Write Your Text Here", " ", "Input Text -->" };
+        // To make the terminal less cluttered and to send a message to the user
+        String[] textMsg = { commons.spacing1, commons.spacing1, "Write Your Text Here", " ", "Input Text -->" };
         for (int i = 0; i < 5; i++) {
             System.out.println(textMsg[i]);
         }
@@ -104,15 +116,15 @@ public class Humaninput {
         for (int i = 0; i < charForm.length; i++) {
             charToAlphaValue[i] = aTI.get(charForm[i]);
         }
-        // To make the terminal less clutterd
+        // To make the terminal less cluttered
         for (int i = 0; i < 2; i++) {
-            System.out.println(commons.spaceing1);
+            System.out.println(commons.spacing1);
         }
 
-        // Packageing the human inputs to send back to main
-        // 0 = Switch Scedule 1 = Rotor Positions 2 = The message
+        // Packaging the human inputs to send back to main
+        // 0 = Switch Schedule 1 = Rotor Positions 2 = The message
         int[][] packedUp = {
-                seedDecOtPt[0], seedDecOtPt[1], charToAlphaValue
+                decodedSeedOutPt[0], decodedSeedOutPt[1], charToAlphaValue
         };
         yesNo.close();
         string.close();

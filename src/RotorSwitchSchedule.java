@@ -1,6 +1,6 @@
-public class RotorSwitchScedule {
+public class RotorSwitchSchedule {
         // There are 20 different switchSchedules
-        int[][] rotSwitchScedule = {
+        int[][] rotSwitchSchedule = {
                         {
                                         29, 14, 17, 39, 36, 24, 31, 50, 59, 33, 37, 21, 61, 41, 1, 68, 32, 2, 28, 42,
                                         25, 11, 43, 44, 5, 20, 62, 58, 18, 0, 64, 6, 16, 9, 52, 63, 4, 10, 51, 3, 67,
