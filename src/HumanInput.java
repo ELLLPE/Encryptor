@@ -31,7 +31,7 @@ public class HumanInput {
                 "For An Example The Seed May Look This ->  /1/5/3/23417/567  Or Like This -> 0105030234170567",
                 "You Can Either Use Zero Or Slash To Mark An Empty Slot", " ", commons.spacing1, commons.spacing1,
                 "The Possible Choices For Switch Schedules are 1-20. And The Possible Choices For Rotor Positions Are 1-70",
-                " ",
+                " ", "(Leave Empty For Default Seed)",
                 "Input Seed -->"
         };
         // Printing the message to the User
@@ -40,7 +40,7 @@ public class HumanInput {
         }
 
         // Asking if the user want to auto generate a seed
-        System.out.println("Do You Want To Auto Generate A seed? Y/n");
+        System.out.println("Do You Want To Auto Generate A seed?  Y/n/*empty*");
         Scanner yesNo = new Scanner(System.in);
         String answer = yesNo.nextLine();
         String answerBig = answer.toUpperCase();
@@ -71,7 +71,7 @@ public class HumanInput {
             System.out.println(" ");
             seedIn = autoSeed;
         } else {
-            for (int i = 6; i < 11; i++) {
+            for (int i = 6; i < 12; i++) {
                 System.out.println(seedMsg[i]);
             }
 
