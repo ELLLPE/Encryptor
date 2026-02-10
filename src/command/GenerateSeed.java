@@ -14,4 +14,9 @@ public class GenerateSeed implements Command {
         System.out.println("Generated seed: " + seed);
     }
 
+    @Override
+    public String secondaryName() {
+        return "--generate-seed";
+    }
+
 }

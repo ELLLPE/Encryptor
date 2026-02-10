@@ -15,4 +15,9 @@ public class GuiCommand implements Command {
         Gui.graphicalInterface();
     }
 
+    @Override
+    public String secondaryName() {
+        return "--gui";
+    }
+
 }

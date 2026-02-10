@@ -17,6 +17,8 @@ public class Console {
 
     public void register(Command cmd) {
         commands.put(cmd.name(), cmd);
+        commands.put(cmd.secondaryName(), cmd);
+
     }
 
     public void start() {

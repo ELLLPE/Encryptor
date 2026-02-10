@@ -26,6 +26,7 @@ public class Main {
         LineReader reader = LineReaderBuilder.builder().terminal(terminal).highlighter(greenHighlighter).build();
 
         Console console = new Console(reader);
+
         console.register(new command.ExitCommand());
         console.register(new command.GuiCommand());
         console.register(new command.SeedCommand());

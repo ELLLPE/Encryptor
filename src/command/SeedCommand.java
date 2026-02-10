@@ -18,4 +18,9 @@ public class SeedCommand implements Command {
 
     }
 
+    @Override
+    public String secondaryName() {
+        return "--seed";
+    }
+
 }
