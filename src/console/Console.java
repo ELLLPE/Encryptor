@@ -21,6 +21,20 @@ public class Console {
 
     }
 
+    private int layeredCommands(String[] args) {
+        int o = 0;
+        int i = 0;
+        while (o < args.length) {
+            if (args[o].startsWith("-")) {
+                System.out.println("Found layered command: " + args[o]);
+                i++;
+            }
+            o++;
+        }
+        return i;
+
+    }
+
     public void start() {
         while (true) {
             String input = reader.readLine("> ").trim();
@@ -28,18 +42,22 @@ public class Console {
                 continue;
 
             String[] parts = input.split("\\s+");
-
-            String name = parts[0];
-            Command cmd = commands.get(name);
-
             String[] args = java.util.Arrays.copyOfRange(parts, 1, parts.length);
+            if (layeredCommands(args) > 0) {
 
-            if (cmd == null) {
-                System.out.println("Unknown Command: " + name);
-                continue;
+            } else {
+
+                String name = parts[0];
+                Command cmd = commands.get(name);
+
+                if (cmd == null) {
+                    System.out.println("Unknown Command: " + name);
+                    continue;
+                }
+
+                System.out.println(cmd.description());
+                cmd.execute(args);
             }
-            System.out.println(cmd.description());
-            cmd.execute(args);
 
         }
     }
