@@ -18,8 +18,6 @@ public class Gui {
 
     public static void graphicalInterface() {
 
-        // Något
-
         try {
             Gui guis = new Gui();
             guis.gUI();

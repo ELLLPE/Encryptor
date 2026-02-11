@@ -35,7 +35,7 @@ public class Console {
             String[] args = java.util.Arrays.copyOfRange(parts, 1, parts.length);
 
             if (cmd == null) {
-                System.out.println("Okänt kommando: " + name);
+                System.out.println("Unknown Command: " + name);
                 continue;
             }
             System.out.println(cmd.description());

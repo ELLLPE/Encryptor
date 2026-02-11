@@ -124,41 +124,50 @@ public class Encrypting {
         int[] EncryptedInPt = new int[inPt[2].length];
 
         int i = 0;
+        int x = 0;
         if (CommonVariables.debug == true) {
             System.out.println(" Encrypting Process Started --> ");
         }
         while (i < inPt[2].length) {
+            int rotorFinalOutputValue;
 
-            int[] rotorUpwardCalcValues = new int[inPt[1].length];
-            int[] rotordownwardCalcValues = new int[inPt[1].length];
-            int[] rotorSpeed = inPt[3];
-            rotorPos = rotorPositionUpdating(rotorPos, rotorSpeed);
+            // skipping decryption to combat decipher technics utilizing the flaw of same
+            // letter out can not be the same letter in. may be changed in future
+            if (x == 19) {
+                rotorFinalOutputValue = inPt[2][i];
+                x = 0;
+            } else { // else continue with the cipher
+                int[] rotorUpwardCalcValues = new int[inPt[1].length];
+                int[] rotordownwardCalcValues = new int[inPt[1].length];
+                int[] rotorSpeed = inPt[3];
+                rotorPos = rotorPositionUpdating(rotorPos, rotorSpeed);
 
-            // Priming by getting the first rotorCalculation
-            rotorUpwardCalcValues[0] = rotorCalculatingUp(rotorPos[0], switchScheduleValue[0], inPt[2][i]);
+                // Priming by getting the first rotorCalculation
+                rotorUpwardCalcValues[0] = rotorCalculatingUp(rotorPos[0], switchScheduleValue[0], inPt[2][i]);
 
-            //
-            for (int o = 1; o < inPt[1].length; o++) {
-                rotorUpwardCalcValues[o] = rotorCalculatingUp(rotorPos[o], switchScheduleValue[o],
-                        rotorUpwardCalcValues[o - 1]);
+                //
+                for (int o = 1; o < inPt[1].length; o++) {
+                    rotorUpwardCalcValues[o] = rotorCalculatingUp(rotorPos[o], switchScheduleValue[o],
+                            rotorUpwardCalcValues[o - 1]);
+                }
+
+                // Using the deflector Array to make the inputted value to the opposite one in a
+                // 0 - deflector.length - 1 limit.
+                int deflected = deflector[rotorUpwardCalcValues[inPt[1].length - 1]];
+
+                // Priming by getting the first rotordownwardCalculating
+                rotordownwardCalcValues[inPt[1].length - 1] = rotorCalculatingDown(rotorPos[inPt[1].length - 1],
+                        switchScheduleValue[inPt[1].length - 1], deflected);
+
+                //
+
+                for (int o = (inPt[1].length - 2); o > -1; o--) {
+                    rotordownwardCalcValues[o] = rotorCalculatingDown(rotorPos[o], switchScheduleValue[o],
+                            rotordownwardCalcValues[o + 1]);
+                }
+
+                rotorFinalOutputValue = rotordownwardCalcValues[0];
             }
-
-            // Using the deflector Array to make the inputted value to the opposite one in a
-            // 0 - 69 limit.
-            int deflected = deflector[rotorUpwardCalcValues[inPt[1].length - 1]];
-
-            // Priming by getting the first rotordownwardCalculating
-            rotordownwardCalcValues[inPt[1].length - 1] = rotorCalculatingDown(rotorPos[inPt[1].length - 1],
-                    switchScheduleValue[inPt[1].length - 1], deflected);
-
-            //
-
-            for (int o = (inPt[1].length - 2); o > -1; o--) {
-                rotordownwardCalcValues[o] = rotorCalculatingDown(rotorPos[o], switchScheduleValue[o],
-                        rotordownwardCalcValues[o + 1]);
-            }
-
-            int rotorFinalOutputValue = rotordownwardCalcValues[0];
 
             EncryptedInPt[i] = rotorFinalOutputValue;
 
@@ -169,7 +178,9 @@ public class Encrypting {
                                 + CommonVariables.alphabet[rotorFinalOutputValue] + " ");
             }
 
+            x++;
             i++;
+
         }
 
         for (int o = 0; o < EncryptedInPt.length; o++) {
