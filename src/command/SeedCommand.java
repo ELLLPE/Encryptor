@@ -1,11 +1,8 @@
 package command;
 
-import com.google.gson.Gson;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import EncryptionFunctions.CommonVariables;
+import CipherDataHandling.Seed.SeedRepository;
+import CipherDataHandling.Seed.SeedService;
+import EncryptionFunctions.InformationProcessing;
 
 public class SeedCommand implements Command {
     public String name() {
@@ -17,28 +14,24 @@ public class SeedCommand implements Command {
     }
 
     public void execute(String[] args) {
-        if (!args[0].matches("[0-9-]+")) {
-            throw new IllegalArgumentException("Invalid characters in seed.");
-        }
-
-        FileWriter writer;
         try {
 
-            Gson gson = new Gson();
+            if (!args[1].matches("[0-9-]+")) {
+                throw new IllegalArgumentException("Invalid characters in seed.");
+            }
 
-            Map<String, String> seedMap = new HashMap<>();
-            seedMap.put("seed", args[0]);
+            SeedRepository repository = new SeedRepository();
+            SeedService service = new SeedService(repository);
 
-            writer = new FileWriter("src/data/ciphersettings.json");
-            gson.toJson(seedMap, writer);
+            int[][] seedData = InformationProcessing.seedDecode(args[1]);
 
-            writer.close();
+            service.updateSeed(args[0], args[1], (args[1].length() - 1), seedData[0], seedData[1], seedData[2]);
+            System.out.println("Seed updated successfully.");
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
+            System.err.println("Error updating seed: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     @Override

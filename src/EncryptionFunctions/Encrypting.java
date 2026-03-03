@@ -1,13 +1,12 @@
 package EncryptionFunctions;
 
+import CipherDataHandling.RotSwitSched.RotSwitSched;
+import CipherDataHandling.RotSwitSched.RotSwitSchedRepository;
+import CipherDataHandling.RotSwitSched.RotSwitSchedService;
+
 public class Encrypting {
 
     private int[][] inPt;
-    // Deflector. It takes the opposite value
-    private static int[] deflector = { 3, 11, 64, 0, 6, 90, 4, 45, 18, 59, 89, 1, 42, 88, 31, 62, 80, 34, 8, 58, 32, 52,
-            61, 65, 46, 86, 76, 36, 85, 93, 41, 14, 20, 92, 17, 97, 27, 56, 63, 98, 71, 30, 12, 72, 75, 7, 24, 48, 47,
-            83, 68, 95, 21, 67, 57, 94, 37, 54, 19, 9, 74, 22, 15, 38, 2, 23, 77, 53, 50, 87, 78, 40, 43, 81, 60, 44,
-            26, 66, 70, 84, 16, 73, 96, 49, 79, 28, 25, 69, 13, 10, 5, 99, 33, 29, 55, 51, 82, 35, 39, 91 };
 
     // Constructor
     public Encrypting(int[][] inPt) {
@@ -79,11 +78,16 @@ public class Encrypting {
      * The Up part describes the direction which it calculating
      */
     private int rotorCalculatingUp(int rotorPos, int switchScheduleValue, int rotorInput) {
+        RotSwitSchedRepository repository = new RotSwitSchedRepository();
+        RotSwitSchedService service = new RotSwitSchedService(repository);
+
+        int[][] rotSwitchSchedule = service.getRotorSwitchSchedule();
+
         int packageReturn = 0;
 
         int y = (rotorInput + rotorPos) % CommonVariables.alphabetLength;
 
-        int x = RotorSwitchSchedule.rotSwitchSchedule[switchScheduleValue][y];
+        int x = rotSwitchSchedule[switchScheduleValue][y];
 
         packageReturn = (x + rotorPos) % CommonVariables.alphabetLength;
 
@@ -94,13 +98,18 @@ public class Encrypting {
      * rotorCalculatingDown calculates down. Same as rotorCalculatingUp but reversed
      */
     private int rotorCalculatingDown(int rotorPos, int switchScheduleValue, int rotorInput) {
+        RotSwitSchedRepository repository = new RotSwitSchedRepository();
+        RotSwitSchedService service = new RotSwitSchedService(repository);
+
+        int[][] rotSwitchSchedule = service.getRotorSwitchSchedule();
+
         int packageReturn = 0;
 
         int z = (rotorInput - rotorPos);
 
         int y = (z + CommonVariables.alphabetLength) % CommonVariables.alphabetLength;
 
-        int x = RotorSwitchSchedule.rotSwitchSchedule[switchScheduleValue][y];
+        int x = rotSwitchSchedule[switchScheduleValue][y];
 
         packageReturn = ((x - rotorPos) + CommonVariables.alphabetLength) % CommonVariables.alphabetLength;
 
@@ -109,6 +118,14 @@ public class Encrypting {
 
     // The main calculation function
     public int[][] calculate() {
+
+        RotSwitSchedRepository repository = new RotSwitSchedRepository();
+        RotSwitSchedService service = new RotSwitSchedService(repository);
+
+        int[] deflector = service.getDeflector();
+
+        // inPt 0 = switchValues on the different rotors 1 = Rotor positions 2 = the
+        // inputted words turned to values 3 = rotor speeds
 
         // in inPt 0 = switchValues on the different rotors 1 = Rotor positions 2 =
         // the inputted words turned to values

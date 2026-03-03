@@ -30,9 +30,9 @@ public class Main {
         console.register(new command.ExitCommand());
         console.register(new command.GuiCommand());
         console.register(new command.SeedCommand());
-        console.register(new command.GenerateSeed());
+        console.register(new command.GenerateSeedCommand());
         console.register(new command.ClearTerminalCommand());
-        console.register(new command.RunEncryptorCipher());
+        console.register(new command.RunEncryptorCipherCommand(reader));
 
         console.start();
     }

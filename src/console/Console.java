@@ -43,21 +43,17 @@ public class Console {
 
             String[] parts = input.split("\\s+");
             String[] args = java.util.Arrays.copyOfRange(parts, 1, parts.length);
-            if (layeredCommands(args) > 0) {
 
-            } else {
+            String name = parts[0];
+            Command cmd = commands.get(name);
 
-                String name = parts[0];
-                Command cmd = commands.get(name);
-
-                if (cmd == null) {
-                    System.out.println("Unknown Command: " + name);
-                    continue;
-                }
-
-                System.out.println(cmd.description());
-                cmd.execute(args);
+            if (cmd == null) {
+                System.out.println("Unknown Command: " + name);
+                continue;
             }
+
+            System.out.println(cmd.description());
+            cmd.execute(args);
 
         }
     }
