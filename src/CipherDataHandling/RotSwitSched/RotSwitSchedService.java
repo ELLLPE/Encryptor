@@ -9,12 +9,8 @@ public class RotSwitSchedService {
         this.rotorSwitchSchedule = repository.loadRotorSwitchSchedule();
     }
 
-    public RotSwitSched getUser() {
-        return rotorSwitchSchedule;
-    }
-
     public int[][] getRotorSwitchSchedule() {
-        return rotorSwitchSchedule.getRotorSwitchSchedule();
+        return rotorSwitchSchedule.getRotorSwitchSchedule(); // If it works, it works
     }
 
     public int[] getDeflector() {

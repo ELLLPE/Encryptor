@@ -22,10 +22,6 @@ public class SeedService {
         repository.save(seed);
     }
 
-    public Seed getUser() {
-        return seed;
-    }
-
     public int[][] getCurrentSeed() {
         return new int[][] { seed.getSeedSpeeds(), seed.getSeedRotorPositions(), seed.getSeedRotorSchedules() };
     }

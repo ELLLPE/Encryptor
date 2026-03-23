@@ -1,4 +1,6 @@
-package EncryptionFunctions;
+package gui;
+
+import cipherCore.*;
 
 // Java AWT Program to implement
 // TextField to Take input from user
@@ -510,42 +512,13 @@ public class Gui {
                 try {
                     String inputText = textInputField.getText();
                     int[][] seedValues = InformationProcessing.seedDecode(seedInputTextField.getText());
-                    if (inputText.length() == 0) {
-                        System.out.println("Input text is empty. Please enter text to encrypt/decrypt.");
-                        return;
-                    }
-                    if (inputText.length() < 51 && CommonVariables.debug == false) {
-                        System.out.println("Encrypt/Decrypt button clicked. Input text: " + inputText);
-                    } else {
-                        System.out.println("Encrypt/Decrypt button clicked. Input text: (too long to display)");
-                    }
 
-                    int[] fixedTextIntegerForm = InformationProcessing
-                            .translateCTI(inputText.toCharArray());
-
-                    Encrypting encryptor = new Encrypting(
-                            new int[][] { seedValues[1], seedValues[2],
-                                    fixedTextIntegerForm, seedValues[0] });
-
-                    int[][] encrypted = encryptor.calculate();
-
-                    if (encrypted[1].length < 51 && CommonVariables.debug == false) {
-                        System.out.println("Encrypted values: ");
-                        for (int i = 0; i < encrypted[1].length; i++) {
-                            System.out.print(CommonVariables.alphabet[encrypted[1][i]] + "");
-                        }
-                        System.out.println();
-                    }
-
-                    StringBuilder outputTextBuilder = new StringBuilder();
-                    for (int i = 0; i < encrypted[1].length; i++) {
-                        outputTextBuilder.append(CommonVariables.alphabet[encrypted[1][i]]);
-                    }
-
-                    textOutputField.setText(outputTextBuilder.toString());
+                    String encrypted = InformationProcessing.runEncryptorCipher(seedValues, inputText);
+                    textOutputField.setText(encrypted);
 
                 } catch (Exception ex) {
                     System.out.println("Error processing input: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
             }
         });

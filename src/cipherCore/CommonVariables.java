@@ -1,4 +1,4 @@
-package EncryptionFunctions;
+package cipherCore;
 
 public class CommonVariables {
         // i believe that this class is quite self-explanatory
@@ -18,7 +18,7 @@ public class CommonVariables {
                         'y', 'Y', 'c', 'C', '"', 'b', 'B', '\'', ':', ';',
                         '(', ')', '+', '=', '/', '@', '&', '%', '*', '<',
                         '>', '[', ']', '{', '}', '|', '\\', 'q', 'Q', 'w',
-                        'W', '$', '_', 'x', 'X', 'z', 'Z', '#', '^', '~' // 100 characters/symbols
+                        'W', '$', '_', 'x', 'X', 'z', 'Z', '#', '^', '~'
         };
 
         public static char[] seedNumberValue = {

@@ -1,6 +1,6 @@
 package command;
 
-import EncryptionFunctions.Gui;
+import gui.Gui;
 
 public class GuiCommand implements Command {
     public String name() {

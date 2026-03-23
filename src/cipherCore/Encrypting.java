@@ -1,4 +1,4 @@
-package EncryptionFunctions;
+package cipherCore;
 
 public class Encrypting {
 

@@ -1,5 +1,8 @@
 package command;
 
+import cipherCore.InformationProcessing;
+import cipherCore.SymbolTransformer;
+
 public class OperationalStatusCommand implements Command {
     public String name() {
         return "-os";
@@ -15,5 +18,6 @@ public class OperationalStatusCommand implements Command {
 
     public void execute(String[] args) {
         System.out.println("Encryptor is operational and ready to use.");
+        System.out.println(SymbolTransformer.symbolToIndexToSymbol(args[0]));
     }
 }

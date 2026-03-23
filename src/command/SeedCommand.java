@@ -2,7 +2,7 @@ package command;
 
 import CipherDataHandling.Seed.SeedRepository;
 import CipherDataHandling.Seed.SeedService;
-import EncryptionFunctions.InformationProcessing;
+import cipherCore.InformationProcessing;
 
 public class SeedCommand implements Command {
     public String name() {

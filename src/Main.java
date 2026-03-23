@@ -33,6 +33,7 @@ public class Main {
         console.register(new command.GenerateSeedCommand());
         console.register(new command.ClearTerminalCommand());
         console.register(new command.RunEncryptorCipherCommand(reader));
+        console.register(new command.OperationalStatusCommand());
 
         console.start();
     }

@@ -21,20 +21,6 @@ public class Console {
 
     }
 
-    private int layeredCommands(String[] args) {
-        int o = 0;
-        int i = 0;
-        while (o < args.length) {
-            if (args[o].startsWith("-")) {
-                System.out.println("Found layered command: " + args[o]);
-                i++;
-            }
-            o++;
-        }
-        return i;
-
-    }
-
     public void start() {
         while (true) {
             String input = reader.readLine("> ").trim();
