@@ -1,7 +1,9 @@
 package command;
 
-import cipherCore.InformationProcessing;
-import cipherCore.SymbolTransformer;
+import cipherCore.*;
+import cipherCore.cipherKeyProcessing.*;
+import cipherDataHandling.characterCodec.CharacterCodecRepository;
+import cipherDataHandling.characterCodec.CharacterCodecService;
 
 public class OperationalStatusCommand implements Command {
     public String name() {
@@ -18,6 +20,6 @@ public class OperationalStatusCommand implements Command {
 
     public void execute(String[] args) {
         System.out.println("Encryptor is operational and ready to use.");
-        System.out.println(SymbolTransformer.symbolToIndexToSymbol(args[0]));
+        CipherKeyProcessing.cipherKeyReader(args[0]);
     }
 }

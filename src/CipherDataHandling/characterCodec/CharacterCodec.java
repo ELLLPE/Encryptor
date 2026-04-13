@@ -1,20 +1,23 @@
-package CipherDataHandling.characterCodec;
+package cipherDataHandling.characterCodec;
 
 public class CharacterCodec {
+    private String characterCodec;
+    private char unsupportedIndicator;
 
-    private char[] characterCodec;
-    private char unsupportedCharactersReplacement;
-
-    public CharacterCodec(char[] characterCodec, char unsupportedCharactersReplacement) {
+    public CharacterCodec(String characterCodec, char unsupportedIndicator) {
         this.characterCodec = characterCodec;
-        this.unsupportedCharactersReplacement = unsupportedCharactersReplacement;
+        this.unsupportedIndicator = unsupportedIndicator;
     }
 
-    public char[] getCharacterCodec() {
+    public String getCharacterCodec() {
         return characterCodec;
     }
 
-    public char getUnsupportedCharactersReplacement() {
-        return unsupportedCharactersReplacement;
+    public char getUnsupportedIndicator() {
+        return unsupportedIndicator;
+    }
+
+    public void setCharacterCodec(String characterCodec) {
+        this.characterCodec = characterCodec;
     }
 }

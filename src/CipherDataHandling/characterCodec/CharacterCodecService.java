@@ -1,23 +1,27 @@
-package CipherDataHandling.characterCodec;
+package cipherDataHandling.characterCodec;
 
 public class CharacterCodecService {
-
     private final CharacterCodecRepository repository;
-    private CharacterCodec characterCodec;
-    private CharacterCodec unsupportedCharactersReplacement;
+    private final CharacterCodec characterCodec;
+    private final CharacterCodec unsupportedIndicator;
 
     public CharacterCodecService(CharacterCodecRepository repository) {
         this.repository = repository;
         this.characterCodec = repository.loadCharacterCodec();
-        this.unsupportedCharactersReplacement = repository.loadCharacterCodec();
+        this.unsupportedIndicator = repository.loadCharacterCodec();
     }
 
-    public char[] getCharacterCodec() {
-        return characterCodec.getCharacterCodec(); // If it works, it works
+    public String getCharacterCodec() {
+        return characterCodec.getCharacterCodec();
     }
 
-    public char getUnsupportedCharactersReplacement() {
-        return unsupportedCharactersReplacement.getUnsupportedCharactersReplacement();
+    public char getUnsupportedIndicator() {
+        return unsupportedIndicator.getUnsupportedIndicator();
+    }
+
+    public void setCharacterCodec(String characterCodecIn) {
+        characterCodec.setCharacterCodec(characterCodecIn);
+        repository.saveCharacterCodec(characterCodec);
     }
 
 }

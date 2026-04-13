@@ -1,4 +1,4 @@
-package CipherDataHandling.Core;
+package cipherDataHandling.Core;
 
 import java.io.File;
 import java.io.FileReader;

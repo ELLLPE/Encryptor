@@ -1,6 +1,6 @@
-package CipherDataHandling.characterCodec;
+package cipherDataHandling.characterCodec;
 
-import CipherDataHandling.Core.SaveManager;
+import cipherDataHandling.Core.SaveManager;
 
 public class CharacterCodecRepository {
 
@@ -9,9 +9,12 @@ public class CharacterCodecRepository {
     public CharacterCodec loadCharacterCodec() {
         CharacterCodec characterCodec = SaveManager.load(PATH, CharacterCodec.class);
         if (characterCodec == null) {
-            throw new RuntimeException("No character codec found at path: " + PATH);
+            throw new RuntimeException("No CharacterCodec found at path: " + PATH);
         }
         return characterCodec;
     }
 
+    public void saveCharacterCodec(CharacterCodec characterCodec) {
+        SaveManager.save(PATH, characterCodec);
+    }
 }

@@ -2,29 +2,35 @@ package cipherCore;
 
 public class Encrypting {
 
-    private int[][] inPt;
-    private int[][] rotSwitchSchedule;
+    private int[][] permutationMap;
     private int[] deflector;
+    private int alphabetLength;
 
     // Constructor
-    public Encrypting(int[][] inPt, int[][] rotSwitchSchedule, int[] deflector) {
-        this.inPt = inPt;
-        this.rotSwitchSchedule = rotSwitchSchedule;
+    public Encrypting(int[][] permutationMaps, int[][] encryptingSkipMaps, int[] deflector,
+            int alphabetLength) {
+
+        this.permutationMap = permutationMaps;
         this.deflector = deflector;
+        this.alphabetLength = alphabetLength;
     }
 
-    /*
+    /**
      * rotorPositionUpdating is used for updating positions
      * based on there position in line and speed
+     * 
+     * @param rotorPosition
+     * @param stepping
+     * @return
      */
-    private int[] rotorPositionUpdating(int[] rotorPosition, int[] rotorSpeed) {
+    private int[] rotorPositionUpdating(int[] rotorPosition, int[] stepping) {
         int i = 0;
         int[] temporary = new int[rotorPosition.length];
         int[] packageReturn = new int[rotorPosition.length];
 
         while (i < rotorPosition.length) {
-            if (rotorSpeed[i] != 0) {
-                temporary[i] = (rotorSpeed[i] + rotorPosition[i]);
+            if (stepping[i] != 0) {
+                temporary[i] = (stepping[i] + rotorPosition[i]);
                 if (CommonVariables.debug == true) {
                     System.out.println("rotor " + i + " updated to position " + temporary[i]);
                 }
@@ -37,7 +43,7 @@ public class Encrypting {
 
             }
 
-            if (temporary[i] > (CommonVariables.alphabetLength - 1)) {
+            if (temporary[i] > (alphabetLength - 1)) {
 
                 // debugging info
                 if (CommonVariables.debug == true) {
@@ -46,7 +52,7 @@ public class Encrypting {
 
                 if ((rotorPosition.length - 1) != i) {
                     rotorPosition[i + 1]++;
-                    packageReturn[i] = temporary[i] % CommonVariables.alphabetLength;
+                    packageReturn[i] = temporary[i] % alphabetLength;
 
                     // debugging info
                     if (CommonVariables.debug == true) {
@@ -56,11 +62,11 @@ public class Encrypting {
 
                 } else {
                     rotorPosition[0]++; // If the last rotor exceeds, the first rotor will increase by 1
-                    packageReturn[i] = temporary[i] % CommonVariables.alphabetLength;
+                    packageReturn[i] = temporary[i] % alphabetLength;
                     if (CommonVariables.debug == true) {
                         System.out.println("Last rotor exceeded max alphabet length, resetting to "
                                 + packageReturn[i] + " and increasing first rotor to "
-                                + (rotorSpeed[0] + packageReturn[i]));
+                                + (stepping[0] + packageReturn[i]));
                     }
                 }
             } else {
@@ -74,131 +80,129 @@ public class Encrypting {
         return packageReturn; // The new updated Rotor Positions
     }
 
-    /*
+    /**
      * rotorCalculatingUp calculates what value in the alphabet will be used instead
      * of the inputted one.
      * The Up part describes the direction which it calculating
+     * 
+     * @param rotorStep
+     * @param permutation
+     * @param rotorInput
+     * @return
      */
-    private int rotorCalculatingUp(int rotorPos, int switchScheduleValue, int rotorInput) {
+    private int rotorCalculatingUp(int rotorStep, int permutation, int rotorInput) {
 
         int packageReturn = 0;
 
-        int y = (rotorInput + rotorPos) % CommonVariables.alphabetLength;
+        int y = (rotorInput + rotorStep) % alphabetLength;
 
-        int x = rotSwitchSchedule[switchScheduleValue][y];
+        int x = permutationMap[permutation][y];
 
-        packageReturn = (x + rotorPos) % CommonVariables.alphabetLength;
+        packageReturn = (x + rotorStep) % alphabetLength;
 
         return packageReturn;
     }
 
-    /*
-     * rotorCalculatingDown calculates down. Same as rotorCalculatingUp but reversed
+    /**
+     * rotorCalculatingDown calculates what value in the alphabet will be used
+     * instead
+     * of the inputted one.
+     * The Down part describes the direction which it calculating
+     * 
+     * @param rotorStep
+     * @param permutation
+     * @param rotorInput
+     * @return
      */
-    private int rotorCalculatingDown(int rotorPos, int switchScheduleValue, int rotorInput) {
+    private int rotorCalculatingDown(int rotorStep, int permutation, int rotorInput) {
 
         int packageReturn = 0;
 
-        int z = (rotorInput - rotorPos);
+        int z = (rotorInput - rotorStep);
 
-        int y = (z + CommonVariables.alphabetLength) % CommonVariables.alphabetLength;
+        int y = (z + alphabetLength) % alphabetLength;
 
-        int x = rotSwitchSchedule[switchScheduleValue][y];
+        int x = permutationMap[permutation][y];
 
-        packageReturn = ((x - rotorPos) + CommonVariables.alphabetLength) % CommonVariables.alphabetLength;
+        packageReturn = ((x - rotorStep) + alphabetLength) % alphabetLength;
 
         return packageReturn;
     }
 
     // The main calculation function
-    public int[][] calculate() {
+    public int[] calculate(int[] stepping, int[] startRotorStep, int[] permutation, int[] symbols, int[] condition,
+            int[] encipherSkipMap) {
 
-        // inPt 0 = switchValues on the different rotors 1 = Rotor positions 2 = the
-        // inputted words turned to values 3 = rotor speeds
+        // The symbols in Integer form
+        int[] encryptedSymbol = symbols;
 
-        // in inPt 0 = switchValues on the different rotors 1 = Rotor positions 2 =
-        // the inputted words turned to values
+        int[] rotorStep = startRotorStep;
 
-        // The switch schedule values
-        int[] switchScheduleValue = inPt[0];
+        int[] rotorFinalOutputValue = new int[symbols.length];
+        int zyz = 0;
+        int forEachSkipWithSkipMap = 0;
+        int xyz = 0;
+        int forEachCondition = 0;
+        boolean willSkip = false;
+        for (int i = 0; i < symbols.length; i++, xyz++, zyz++) {
 
-        // The Rotor Positions
-        int[] rotorPos = inPt[1];
+            // need to find better solution :)
+            if (xyz == condition[forEachCondition] && willSkip == false) {
+                forEachCondition++;
+                xyz = 0;
+                willSkip = true;
+            }
 
-        // The message in Integer form
-        int[] EncryptedInPt = new int[inPt[2].length];
+            if (xyz == condition[forEachCondition] && willSkip == true) {
+                forEachCondition++;
+                xyz = 0;
+                willSkip = false;
+            }
 
-        int i = 0;
-        int x = 0;
-        if (CommonVariables.debug == true) {
-            System.out.println(" Encrypting Process Started --> ");
-        }
-        while (i < inPt[2].length) {
-            int rotorFinalOutputValue;
+            if (willSkip == false || encipherSkipMap[forEachSkipWithSkipMap] == zyz) {
+                rotorFinalOutputValue = symbols;
+                if (encipherSkipMap[forEachSkipWithSkipMap] == zyz) {
+                    forEachSkipWithSkipMap++;
+                    zyz = 0;
+                }
 
-            // skipping decryption to combat decipher technics utilizing the flaw of same
-            // letter out can not be the same letter in. may be changed in future
-            if (x == 19) {
-                rotorFinalOutputValue = inPt[2][i];
-                x = 0;
             } else { // else continue with the cipher
-                int[] rotorUpwardCalcValues = new int[inPt[1].length];
-                int[] rotordownwardCalcValues = new int[inPt[1].length];
-                int[] rotorSpeed = inPt[3];
-                rotorPos = rotorPositionUpdating(rotorPos, rotorSpeed);
+                int[] rotorUpwardCalcValues = new int[permutation.length];
+                int[] rotordownwardCalcValues = new int[permutation.length];
+
+                rotorStep = rotorPositionUpdating(rotorStep, stepping);
 
                 // Priming by getting the first rotorCalculation
-                rotorUpwardCalcValues[0] = rotorCalculatingUp(rotorPos[0], switchScheduleValue[0], inPt[2][i]);
+                rotorUpwardCalcValues[0] = rotorCalculatingUp(rotorStep[0], permutation[0], symbols[0]);
 
                 //
-                for (int o = 1; o < inPt[1].length; o++) {
-                    rotorUpwardCalcValues[o] = rotorCalculatingUp(rotorPos[o], switchScheduleValue[o],
+                for (int o = 1; o < permutation.length; o++) {
+                    rotorUpwardCalcValues[o] = rotorCalculatingUp(rotorStep[o], permutation[o],
                             rotorUpwardCalcValues[o - 1]);
                 }
 
                 // Using the deflector Array to make the inputted value to the opposite one in a
                 // 0 - deflector.length - 1 limit.
-                int deflected = deflector[rotorUpwardCalcValues[inPt[1].length - 1]];
+                int deflected = deflector[rotorUpwardCalcValues[permutation.length - 1]];
 
                 // Priming by getting the first rotordownwardCalculating
-                rotordownwardCalcValues[inPt[1].length - 1] = rotorCalculatingDown(rotorPos[inPt[1].length - 1],
-                        switchScheduleValue[inPt[1].length - 1], deflected);
+                rotordownwardCalcValues[permutation.length - 1] = rotorCalculatingDown(
+                        rotorStep[permutation.length - 1],
+                        permutation[permutation.length - 1], deflected);
 
                 //
-
-                for (int o = (inPt[1].length - 2); o > -1; o--) {
-                    rotordownwardCalcValues[o] = rotorCalculatingDown(rotorPos[o], switchScheduleValue[o],
+                for (int o = (permutation.length - 2); o > -1; o--) {
+                    rotordownwardCalcValues[o] = rotorCalculatingDown(rotorStep[o], permutation[o],
                             rotordownwardCalcValues[o + 1]);
                 }
 
-                rotorFinalOutputValue = rotordownwardCalcValues[0];
-            }
-
-            EncryptedInPt[i] = rotorFinalOutputValue;
-
-            // Printing out the unencrypted to encrypted for debugging purposes
-            if (CommonVariables.debug == true) {
-                System.out.print(
-                        "| " + CommonVariables.alphabet[inPt[2][i]] + " -> "
-                                + CommonVariables.alphabet[rotorFinalOutputValue] + " ");
-            }
-
-            x++;
-            i++;
-
-        }
-
-        for (int o = 0; o < EncryptedInPt.length; o++) {
-            if (CommonVariables.debug == true) {
-                System.out.print("| " + CommonVariables.alphabet[inPt[2][o]] + " -> "
-                        + CommonVariables.alphabet[EncryptedInPt[o]] + " ");
+                rotorFinalOutputValue[i] = rotordownwardCalcValues[0];
             }
         }
 
-        // Packaging the useful information for sendOf
-        int[][] sendOf = { rotorPos, EncryptedInPt };
+        encryptedSymbol = rotorFinalOutputValue;
 
-        return sendOf;
+        return encryptedSymbol;
     }
 
 }

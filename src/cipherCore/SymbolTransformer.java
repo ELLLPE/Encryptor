@@ -1,33 +1,27 @@
 package cipherCore;
 
 import java.util.LinkedHashMap;
-import java.util.ArrayList;
 
-import CipherDataHandling.characterCodec.CharacterCodecRepository;
-import CipherDataHandling.characterCodec.CharacterCodecService;
+import cipherDataHandling.characterCodec.CharacterCodecRepository;
+import cipherDataHandling.characterCodec.CharacterCodecService;
+
+import java.util.ArrayList;
 
 public class SymbolTransformer {
 
     public static int[][] mapSymbolToIndex(char[] mapSymbol) {
 
-        CharacterCodecRepository repository = new CharacterCodecRepository();
-        CharacterCodecService service = new CharacterCodecService(repository);
-
-        LinkedHashMap<Character, Integer> symbolToIndex = new LinkedHashMap<>();
-        for (int i = 0; i < CommonVariables.alphabet.length; i++) {
-            symbolToIndex.put(service.getCharacterCodec()[i], i);
-        }
-
+        CharacterCodecService service = new CharacterCodecService(new CharacterCodecRepository());
         ArrayList<Integer> unsupportedSymbol = new ArrayList<Integer>(); // initializing unsupportedSymbol arraylist
 
         int[] index = new int[mapSymbol.length];
 
         for (int i = 0; i < mapSymbol.length; i++) {
 
-            if (!symbolToIndex.containsKey(mapSymbol[i])) {
+            if ((service.getCharacterCodec().indexOf(mapSymbol[i])) == -1) {
                 unsupportedSymbol.add(i); // collects unsupported symbol positions
 
-                if (CommonVariables.debug = true) {
+                if (CommonVariables.debug == true) {
                     System.out.println("found an unsupported symbol at " + i);
                 }
                 index[i] = 0; // Replaces the unsupported symbol with an supported one to be later replaced
@@ -35,7 +29,7 @@ public class SymbolTransformer {
                 continue;
             }
 
-            index[i] = symbolToIndex.get(mapSymbol[i]);
+            index[i] = service.getCharacterCodec().indexOf(mapSymbol[i]);
 
         }
 
@@ -48,13 +42,7 @@ public class SymbolTransformer {
 
     public static String mapIndexToSymbol(int[] mapIndex, int[] unsupportedSymbolPosition) {
 
-        CharacterCodecRepository repository = new CharacterCodecRepository();
-        CharacterCodecService service = new CharacterCodecService(repository);
-
-        LinkedHashMap<Integer, Character> indexToSymbol = new LinkedHashMap<>();
-        for (int i = 0; i < CommonVariables.alphabet.length; i++) {
-            indexToSymbol.put(i, service.getCharacterCodec()[i]);
-        }
+        CharacterCodecService service = new CharacterCodecService(new CharacterCodecRepository());
 
         char[] symbols = new char[mapIndex.length];
 
@@ -63,7 +51,7 @@ public class SymbolTransformer {
 
             if (unsupportedSymbolPosition.length != o && unsupportedSymbolPosition.length != 0
                     && i == unsupportedSymbolPosition[o]) {
-                symbols[i] = service.getUnsupportedCharactersReplacement();
+                symbols[i] = service.getUnsupportedIndicator();
                 if (CommonVariables.debug == true) {
                     System.out.println("Replaced Character: " + i + " With Unsupported Symbol Indicator");
                 }
@@ -72,7 +60,7 @@ public class SymbolTransformer {
             }
 
             try {
-                symbols[i] = indexToSymbol.get(mapIndex[i]);
+                symbols[i] = service.getCharacterCodec().charAt(mapIndex[i]);
             } catch (Exception e) {
                 System.out.println("Error Converting Index To Symbol" + e.getMessage());
             }
@@ -97,6 +85,29 @@ public class SymbolTransformer {
 
         return SymbolTransformer.mapIndexToSymbol(index[0], index[1]);
 
+    }
+
+    public static int mapSymbolNumbersToIndex(char[] symbolIn) {
+
+        char[] symbolNumbers = {
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        };
+
+        LinkedHashMap<Character, Integer> symbolNumbersToIndex = new LinkedHashMap<>();
+        for (int i = 0; i < symbolNumbers.length; i++) {
+            symbolNumbersToIndex.put(symbolNumbers[i], i);
+        }
+
+        int x = 0;
+        for (int i = 0; i < symbolIn.length; i++) {
+
+            int y = (int) Math.pow(10, (symbolIn.length - 1) - i);
+
+            x += symbolNumbersToIndex.get(symbolIn[i]) * y;
+
+        }
+
+        return x;
     }
 
 }

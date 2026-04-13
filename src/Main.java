@@ -1,5 +1,4 @@
 
-import console.Console;
 import java.io.IOException;
 
 import org.jline.reader.Highlighter;
@@ -9,6 +8,8 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
+
+import command.Console;
 
 public class Main {
 
@@ -28,13 +29,8 @@ public class Main {
         Console console = new Console(reader);
 
         console.register(new command.ExitCommand());
-        console.register(new command.GuiCommand());
-        console.register(new command.SeedCommand());
-        console.register(new command.GenerateSeedCommand());
         console.register(new command.ClearTerminalCommand());
-        console.register(new command.RunEncryptorCipherCommand(reader));
         console.register(new command.OperationalStatusCommand());
-
         console.start();
     }
 }
