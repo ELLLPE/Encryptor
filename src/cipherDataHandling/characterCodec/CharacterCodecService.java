@@ -15,6 +15,10 @@ public class CharacterCodecService {
         return characterCodec.getCharacterCodec();
     }
 
+    public int getCharacterCodecLength() {
+        return characterCodec.getCharacterCodec().length();
+    }
+
     public char getUnsupportedIndicator() {
         return unsupportedIndicator.getUnsupportedIndicator();
     }

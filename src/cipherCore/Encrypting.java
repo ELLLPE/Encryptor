@@ -1,17 +1,18 @@
 package cipherCore;
 
+import CipherData.CipherKeySegmentCache;
+
 public class Encrypting {
 
     private int[][] permutationMap;
-    private int[] deflector;
+
     private int alphabetLength;
 
     // Constructor
-    public Encrypting(int[][] permutationMaps, int[][] encryptingSkipMaps, int[] deflector,
-            int alphabetLength) {
+    public Encrypting(int[][] permutationMap, int alphabetLength) {
 
-        this.permutationMap = permutationMaps;
-        this.deflector = deflector;
+        this.permutationMap = permutationMap;
+
         this.alphabetLength = alphabetLength;
     }
 
@@ -130,73 +131,71 @@ public class Encrypting {
     }
 
     // The main calculation function
-    public int[] calculate(int[] stepping, int[] startRotorStep, int[] permutation, int[] symbols, int[] condition,
-            int[] encipherSkipMap) {
+    public int[] calculate(int[] toBeEncrypted, CipherKeySegmentCache cksc) {
 
-        // The symbols in Integer form
-        int[] encryptedSymbol = symbols;
+        // The toBeEncrypted in Integer form
+        int[] encryptedSymbol = toBeEncrypted;
 
-        int[] rotorStep = startRotorStep;
+        int[] rotorStep = cksc.stepStart();
 
-        int[] rotorFinalOutputValue = new int[symbols.length];
-        int zyz = 0;
-        int forEachSkipWithSkipMap = 0;
+        int[] rotorFinalOutputValue = new int[toBeEncrypted.length];
+
+        // Used for skipping logic
         int xyz = 0;
         int forEachCondition = 0;
-        boolean willSkip = false;
-        for (int i = 0; i < symbols.length; i++, xyz++, zyz++) {
+        boolean willSkip = true;
+        for (int i = 0; i < toBeEncrypted.length; i++) {
 
-            // need to find better solution :)
-            if (xyz == condition[forEachCondition] && willSkip == false) {
-                forEachCondition++;
-                xyz = 0;
+            if (cksc.conditions() != null) {
+                xyz++;
+
+                if (forEachCondition < cksc.conditions().length) {
+                    // need to find better solution :)
+                    if (xyz == cksc.conditions()[forEachCondition] && willSkip == true) {
+                        forEachCondition++;
+                        xyz = 0;
+                        willSkip = false;
+                    }
+
+                    if (xyz == cksc.conditions()[forEachCondition] && willSkip == false) {
+                        forEachCondition++;
+                        xyz = 0;
+                        willSkip = true;
+                    }
+                } else if (cksc.conditionReset() != 0) {
+                    if (xyz == cksc.conditionReset()) {
+                        forEachCondition = 0;
+                        xyz = 0;
+                    }
+                    willSkip = true;
+                }
+
+            } else if (cksc.conditions() == null) {
+                willSkip = false;
+            } else {
                 willSkip = true;
             }
 
-            if (xyz == condition[forEachCondition] && willSkip == true) {
-                forEachCondition++;
-                xyz = 0;
-                willSkip = false;
-            }
-
-            if (willSkip == false || encipherSkipMap[forEachSkipWithSkipMap] == zyz) {
-                rotorFinalOutputValue = symbols;
-                if (encipherSkipMap[forEachSkipWithSkipMap] == zyz) {
-                    forEachSkipWithSkipMap++;
-                    zyz = 0;
-                }
+            if (willSkip == true) {
+                rotorFinalOutputValue = toBeEncrypted;
 
             } else { // else continue with the cipher
-                int[] rotorUpwardCalcValues = new int[permutation.length];
-                int[] rotordownwardCalcValues = new int[permutation.length];
+                int rotorOutput = toBeEncrypted[i];
 
-                rotorStep = rotorPositionUpdating(rotorStep, stepping);
+                rotorStep = rotorPositionUpdating(rotorStep, cksc.stepping());
 
-                // Priming by getting the first rotorCalculation
-                rotorUpwardCalcValues[0] = rotorCalculatingUp(rotorStep[0], permutation[0], symbols[0]);
-
-                //
-                for (int o = 1; o < permutation.length; o++) {
-                    rotorUpwardCalcValues[o] = rotorCalculatingUp(rotorStep[o], permutation[o],
-                            rotorUpwardCalcValues[o - 1]);
+                for (int o = 0; o < cksc.stepStart().length; o++) {
+                    rotorOutput = rotorCalculatingUp(rotorStep[o], cksc.permutationMap()[o], rotorOutput);
                 }
 
-                // Using the deflector Array to make the inputted value to the opposite one in a
-                // 0 - deflector.length - 1 limit.
-                int deflected = deflector[rotorUpwardCalcValues[permutation.length - 1]];
+                // Deflector
+                rotorOutput = permutationMap[cksc.deflector()][rotorOutput];
 
-                // Priming by getting the first rotordownwardCalculating
-                rotordownwardCalcValues[permutation.length - 1] = rotorCalculatingDown(
-                        rotorStep[permutation.length - 1],
-                        permutation[permutation.length - 1], deflected);
-
-                //
-                for (int o = (permutation.length - 2); o > -1; o--) {
-                    rotordownwardCalcValues[o] = rotorCalculatingDown(rotorStep[o], permutation[o],
-                            rotordownwardCalcValues[o + 1]);
+                for (int o = cksc.stepStart().length - 1; o > -1; o--) {
+                    rotorOutput = rotorCalculatingDown(rotorStep[o], cksc.permutationMap()[o], rotorOutput);
                 }
 
-                rotorFinalOutputValue[i] = rotordownwardCalcValues[0];
+                rotorFinalOutputValue[i] = rotorOutput;
             }
         }
 

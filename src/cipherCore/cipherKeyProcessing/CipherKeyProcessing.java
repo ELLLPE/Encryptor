@@ -7,20 +7,20 @@ import cipherDataHandling.characterCodec.CharacterCodecService;
 
 class CipherKeySegmenter {
     ArrayList<Integer> leftOverCipherKey;
+    int deflector;
     int[] decKeySegStepping;
     int[] decKeySegStepStart;
     int[] decKeySegPermutationMap;
-    int[] decKeySegEncipherSkipMap;
     int[] decKeySegConditions;
     int decKeySegConReset;
 
-    CipherKeySegmenter(ArrayList<Integer> leftOverCipherKey, int[] stepping, int[] startStep, int[] permutationMap,
-            int[] encipherSkipMap, int[] conditions, int conditionReset) {
+    CipherKeySegmenter(ArrayList<Integer> leftOverCipherKey, int deflector, int[] stepping, int[] startStep,
+            int[] permutationMap, int[] conditions, int conditionReset) {
         this.leftOverCipherKey = leftOverCipherKey;
+        this.deflector = deflector;
         decKeySegStepping = stepping;
         decKeySegStepStart = startStep;
         decKeySegPermutationMap = permutationMap;
-        decKeySegEncipherSkipMap = encipherSkipMap;
         decKeySegConditions = conditions;
         decKeySegConReset = conditionReset;
 
@@ -82,6 +82,9 @@ public class CipherKeyProcessing {
         int conditionContent = cipherKeyInteger.getFirst();
         cipherKeyInteger.removeFirst();
 
+        Combining deflector = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
+        cipherKeyInteger = deflector.leftOverArrayListInput;
+
         //
         Combining rotor = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
         cipherKeyInteger = rotor.leftOverArrayListInput;
@@ -89,7 +92,6 @@ public class CipherKeyProcessing {
         int[] stepping = new int[rotor.value];
         int[] startStep = new int[rotor.value];
         int[] permutationMap = new int[rotor.value];
-        int[] encipherSkipMap = new int[rotor.value];
 
         for (int i = 0; i < rotor.value; i++) {
 
@@ -99,19 +101,15 @@ public class CipherKeyProcessing {
             startStep[i] = cipherKeyInteger.getFirst();
             cipherKeyInteger.removeFirst();
 
-            Combining permutation = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
-            permutationMap[i] = permutation.value;
+            Combining pm = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
+            permutationMap[i] = pm.value;
 
-            Combining encipherSkip = getCombining(permutation.leftOverArrayListInput,
-                    permutation.leftOverArrayListInput.getFirst());
-            encipherSkipMap[i] = encipherSkip.value;
-
-            cipherKeyInteger = encipherSkip.leftOverArrayListInput;
+            cipherKeyInteger = pm.leftOverArrayListInput;
         }
 
         // returns the information if there is no conditions
         if (conditionContent == 0) {
-            return new CipherKeySegmenter(cipherKeyInteger, stepping, startStep, permutationMap, encipherSkipMap, null,
+            return new CipherKeySegmenter(cipherKeyInteger, deflector.value, stepping, startStep, permutationMap, null,
                     0);
         }
 
@@ -137,11 +135,11 @@ public class CipherKeyProcessing {
             Combining conR = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
             int conditionReset = conR.value;
 
-            return new CipherKeySegmenter(cipherKeyInteger, stepping, startStep, permutationMap, encipherSkipMap,
+            return new CipherKeySegmenter(cipherKeyInteger, deflector.value, stepping, startStep, permutationMap,
                     conditions, conditionReset);
         }
 
-        return new CipherKeySegmenter(cipherKeyInteger, stepping, startStep, permutationMap, encipherSkipMap,
+        return new CipherKeySegmenter(cipherKeyInteger, deflector.value, stepping, startStep, permutationMap,
                 conditions, 0);
     }
 
@@ -164,31 +162,35 @@ public class CipherKeyProcessing {
         Combining cipKey = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
         cipherKeyInteger = cipKey.leftOverArrayListInput;
 
+        int[] deflector = new int[cipKey.value];
         int[][] stepping = new int[cipKey.value][];
         int[][] stepStart = new int[cipKey.value][];
         int[][] permutationMap = new int[cipKey.value][];
-        int[][] encipherSkipMap = new int[cipKey.value][];
         int[][] conditions = new int[cipKey.value][];
         int[] conditionResets = new int[cipKey.value];
 
         for (int i = 0; i < cipKey.value; i++) {
             try {
                 CipherKeySegmenter segment = getCipherKeySegmenter(cipherKeyInteger);
+                deflector[i] = segment.deflector;
                 stepping[i] = segment.decKeySegStepping;
                 stepStart[i] = segment.decKeySegStepStart;
                 permutationMap[i] = segment.decKeySegPermutationMap;
-                encipherSkipMap[i] = segment.decKeySegEncipherSkipMap;
                 conditions[i] = segment.decKeySegConditions;
                 conditionResets[i] = segment.decKeySegConReset;
 
                 cipherKeyInteger = segment.leftOverCipherKey;
 
             } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("");
                 System.err.println("Sowwy :3, No wowky");
+
             }
         }
 
-        CipherKeyCache x = new CipherKeyCache(stepping, stepStart, permutationMap, encipherSkipMap, conditions,
+        CipherKeyCache x = new CipherKeyCache(deflector, stepping, stepStart, permutationMap,
+                conditions,
                 conditionResets);
         return x;
 
