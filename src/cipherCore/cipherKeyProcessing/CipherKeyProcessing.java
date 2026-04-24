@@ -2,6 +2,7 @@ package cipherCore.cipherKeyProcessing;
 
 import java.util.ArrayList;
 import CipherData.CipherKeyCache;
+import CipherData.CipherKeyCacheStore;
 import cipherDataHandling.characterCodec.CharacterCodecRepository;
 import cipherDataHandling.characterCodec.CharacterCodecService;
 
@@ -147,7 +148,7 @@ public class CipherKeyProcessing {
      * 
      * @param cipherKey
      */
-    public static CipherKeyCache cipherKeyReader(String cipherKey) {
+    private void cipherKeyReader(String cipherKey) {
 
         //
         ArrayList<Integer> cipherKeyInteger = new ArrayList<Integer>();
@@ -192,7 +193,21 @@ public class CipherKeyProcessing {
         CipherKeyCache x = new CipherKeyCache(deflector, stepping, stepStart, permutationMap,
                 conditions,
                 conditionResets);
-        return x;
+
+        CipherKeyCacheStore.set(x);
+
+    }
+
+    public void runCipherKeyReader(String cipherKey) {
+
+        try {
+            CipherKeyProcessing x = new CipherKeyProcessing();
+            x.cipherKeyReader(cipherKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println();
+            System.err.println("Failed to run CipherKeyReader");
+        }
 
     }
 
