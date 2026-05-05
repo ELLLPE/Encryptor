@@ -24,14 +24,12 @@ public class CipherManager {
         Encrypting encryptor = new Encrypting(pm.getPermutationMap(), cc.getCharacterCodecLength());
 
         if (decrypt == false) {
-            System.out.println("Encrypting");
             for (int i = 0; i < x.stepping().length; i++) {
                 CipherKeySegmentCache p = new CipherKeySegmentCache(x.deflector()[i], x.stepping()[i], x.stepStart()[i],
                         x.permutationMap()[i], x.conditions()[i], x.conditionReset()[i]);
                 toBeEncrypted = encipheringWithCipherSegment(encryptor, toBeEncrypted, p);
             }
         } else {
-            System.out.println("Decrypting");
             for (int i = x.stepping().length - 1; i > -1; i--) {
                 CipherKeySegmentCache p = new CipherKeySegmentCache(x.deflector()[i], x.stepping()[i], x.stepStart()[i],
                         x.permutationMap()[i], x.conditions()[i], x.conditionReset()[i]);

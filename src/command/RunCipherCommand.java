@@ -1,11 +1,17 @@
 package command;
 
-import org.jline.reader.LineReader;
-
 import cipherCore.CipherManager;
 import cipherCore.SymbolTransformer;
 
+import org.jline.reader.LineReader;
+
 public class RunCipherCommand implements Command {
+    private final LineReader reader;
+
+    public RunCipherCommand(LineReader reader) {
+        this.reader = reader;
+    }
+
     public String name() {
         return "-rc";
     }
@@ -25,26 +31,21 @@ public class RunCipherCommand implements Command {
     }
 
     public void execute(String[] args) {
-
-        boolean bool = false;
-
-        if (args.length != 0) {
-            bool = (args[0].equalsIgnoreCase("decrypt") || args[0].equalsIgnoreCase("1")
-                    || args[0].equalsIgnoreCase("yes") || args[0].equalsIgnoreCase("y"));
-        } else {
-            System.out.println("No decryption argument provided, defaulting to encryption mode.");
+        System.out.println("Cipher Condition: either <Encrypt> or <Decrypt>");
+        String condition = reader.readLine("|en| or |de| > ");
+        boolean isDecrypt = false;
+        if (condition.equals("de")) {
+            isDecrypt = true;
         }
+        System.out.println("Cipher Condition: " + isDecrypt);
+
+        String content = reader.readLine("Input Content: > ");
 
         CipherManager x = new CipherManager();
+        int[][] symbolMap = SymbolTransformer.mapSymbolToIndex(content.toCharArray());
 
-        String input = reader.readLine("Input here -> ");
-
-        int[][] temp = SymbolTransformer.mapSymbolToIndex(input.toCharArray());
-
-        int[] result = x.runCipher(temp[0], bool);
-
-        System.out.println("");
-        System.out.println(SymbolTransformer.mapIndexToSymbol(result, temp[1]));
-
+        System.out.println("Running Cipher...");
+        System.out.print(SymbolTransformer.mapIndexToSymbol(x.runCipher(symbolMap[0], isDecrypt), symbolMap[1]));
+        System.out.println("<:Output");
     }
 }

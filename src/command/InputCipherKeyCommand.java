@@ -2,10 +2,14 @@ package command;
 
 import org.jline.reader.LineReader;
 
-import CipherData.CipherKeyCache;
 import cipherCore.cipherKeyProcessing.CipherKeyProcessing;
 
 public class InputCipherKeyCommand implements Command {
+    private final LineReader reader;
+
+    public InputCipherKeyCommand(LineReader reader) {
+        this.reader = reader;
+    }
 
     public String name() {
         return "-ic";
@@ -27,11 +31,11 @@ public class InputCipherKeyCommand implements Command {
 
     public void execute(String[] args) {
 
+        String cipherKey = reader.readLine("Input CipherKey: > ");
+
         CipherKeyProcessing x = new CipherKeyProcessing();
 
-        String input = reader.readLine("Input here -> ");
-
-        x.runCipherKeyReader(input);
+        x.runCipherKeyReader(cipherKey);
 
     }
 

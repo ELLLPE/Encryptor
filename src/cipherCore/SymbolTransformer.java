@@ -112,7 +112,7 @@ public class SymbolTransformer {
         }
 
         if (CommonVariables.debug == true) {
-            System.out.println(stringBuilder.toString());
+            System.out.println("Debug: " + stringBuilder.toString());
         }
 
         return stringBuilder.toString();
