@@ -1,14 +1,5 @@
 package command;
 
-import CipherData.CipherKeyCache;
-import cipherCore.*;
-import cipherCore.cipherKeyProcessing.*;
-import cipherDataHandling.characterCodec.CharacterCodecRepository;
-import cipherDataHandling.characterCodec.CharacterCodecService;
-import cipherDataHandling.permutationMap.PermutationMap;
-import cipherDataHandling.permutationMap.PermutationMapRepository;
-import cipherDataHandling.permutationMap.PermutationMapService;
-
 public class OperationalStatusCommand implements Command {
     public String name() {
         return "-os";
