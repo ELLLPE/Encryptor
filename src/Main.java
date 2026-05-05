@@ -31,7 +31,8 @@ public class Main {
         console.register(new command.ExitCommand());
         console.register(new command.ClearTerminalCommand());
         console.register(new command.OperationalStatusCommand());
-        console.register(new command.InputCipherKeyCommand());
+        console.register(new command.InputCipherKeyCommand(reader));
+        console.register(new command.RunCipherCommand(reader));
         console.start();
     }
 }

@@ -1,13 +1,7 @@
 package command;
 
-import CipherData.CipherKeyCache;
-import cipherCore.*;
-import cipherCore.cipherKeyProcessing.*;
-import cipherDataHandling.characterCodec.CharacterCodecRepository;
-import cipherDataHandling.characterCodec.CharacterCodecService;
-import cipherDataHandling.permutationMap.PermutationMap;
-import cipherDataHandling.permutationMap.PermutationMapRepository;
-import cipherDataHandling.permutationMap.PermutationMapService;
+import cipherCore.cipherKeyProcessing.CipherKeyAssembler;
+import cipherCore.cipherKeyProcessing.CipherKeyGenerator;
 
 public class OperationalStatusCommand implements Command {
     public String name() {
@@ -24,6 +18,10 @@ public class OperationalStatusCommand implements Command {
 
     public void execute(String[] args) {
         System.out.println("Encryptor is operational and ready to use.");
+
+        String x = CipherKeyAssembler.cipherKeyAssembly(CipherKeyGenerator.generateWithSeed(1335346477756400083L));
+
+        System.out.println("Cipher Key -> : " + x);
 
     }
 }

@@ -42,17 +42,18 @@ public class CipherManager {
         return toBeEncrypted;
     }
 
-    public void runCipher(int[] toBeEncrypted, boolean encryptOrDecrypt) {
+    public int[] runCipher(int[] toBeEncrypted, boolean encryptOrDecrypt) {
 
         try {
             CipherManager p = new CipherManager();
             CipherKeyCache x = CipherKeyCacheStore.get();
 
-            p.cipherCoordinator(x, toBeEncrypted, encryptOrDecrypt);
+            return p.cipherCoordinator(x, toBeEncrypted, encryptOrDecrypt);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println();
             System.err.println("Failed to run Cipher");
+            return null;
         }
 
     }

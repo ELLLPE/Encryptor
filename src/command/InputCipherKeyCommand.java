@@ -1,5 +1,7 @@
 package command;
 
+import org.jline.reader.LineReader;
+
 import CipherData.CipherKeyCache;
 import cipherCore.cipherKeyProcessing.CipherKeyProcessing;
 
@@ -17,11 +19,19 @@ public class InputCipherKeyCommand implements Command {
         return "Used for inputting CipherKeys";
     }
 
+    private final LineReader reader;
+
+    public InputCipherKeyCommand(LineReader reader) {
+        this.reader = reader;
+    }
+
     public void execute(String[] args) {
 
         CipherKeyProcessing x = new CipherKeyProcessing();
 
-        x.runCipherKeyReader(args[0]);
+        String input = reader.readLine("Input here -> ");
+
+        x.runCipherKeyReader(input);
 
     }
 

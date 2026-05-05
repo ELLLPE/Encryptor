@@ -40,6 +40,45 @@ public class SymbolTransformer {
         return packageReturn;
     }
 
+    public static char mapIndexToSymbol(int mapIndex) {
+        CharacterCodecService service = new CharacterCodecService(new CharacterCodecRepository());
+
+        try {
+            return service.getCharacterCodec().charAt(mapIndex);
+        } catch (Exception e) {
+            System.out.println("Error Converting Index To Symbol" + e.getMessage());
+            return 0;
+        }
+
+    }
+
+    public static String mapIndexToSymbol(int[] mapIndex) {
+
+        CharacterCodecService service = new CharacterCodecService(new CharacterCodecRepository());
+
+        char[] symbols = new char[mapIndex.length];
+
+        for (int i = 0; i < mapIndex.length; i++) {
+            try {
+                symbols[i] = service.getCharacterCodec().charAt(mapIndex[i]);
+            } catch (Exception e) {
+                System.out.println("Error Converting Index To Symbol" + e.getMessage());
+            }
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < symbols.length; i++) {
+            stringBuilder.append(symbols[i]);
+        }
+
+        if (CommonVariables.debug == true) {
+            System.out.println(stringBuilder.toString());
+        }
+
+        return stringBuilder.toString();
+
+    }
+
     public static String mapIndexToSymbol(int[] mapIndex, int[] unsupportedSymbolPosition) {
 
         CharacterCodecService service = new CharacterCodecService(new CharacterCodecRepository());
