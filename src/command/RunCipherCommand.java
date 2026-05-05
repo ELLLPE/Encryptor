@@ -24,12 +24,6 @@ public class RunCipherCommand implements Command {
         return "Runs Encryptor Cipher";
     }
 
-    private final LineReader reader;
-
-    public RunCipherCommand(LineReader reader) {
-        this.reader = reader;
-    }
-
     public void execute(String[] args) {
         System.out.println("Cipher Condition: either <Encrypt> or <Decrypt>");
         String condition = reader.readLine("|en| or |de| > ");
@@ -40,6 +34,8 @@ public class RunCipherCommand implements Command {
         System.out.println("Cipher Condition: " + isDecrypt);
 
         String content = reader.readLine("Input Content: > ");
+
+        System.out.println("Content: " + content);
 
         CipherManager x = new CipherManager();
         int[][] symbolMap = SymbolTransformer.mapSymbolToIndex(content.toCharArray());

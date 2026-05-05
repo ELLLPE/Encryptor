@@ -30,26 +30,26 @@ public class Encrypting {
         int[] packageReturn = new int[rotorPosition.length];
 
         while (i < rotorPosition.length) {
+
+            if (CommonVariables.debug == true) {
+                System.out.print("rotor " + i + " position: " + rotorPosition[i] + " Stepping: " + stepping[i] + " |");
+            }
+
             if (stepping[i] != 0) {
                 temporary[i] = (stepping[i] + rotorPosition[i]);
                 if (CommonVariables.debug == true) {
-                    System.out.println("rotor " + i + " updated to position " + temporary[i]);
+                    System.out.print(" updated |");
                 }
 
             } else {
                 temporary[i] = rotorPosition[i];
                 if (CommonVariables.debug == true) {
-                    System.out.println("rotor " + i + " did not move and is still at position " + temporary[i]);
+                    System.out.print(" did not update |");
                 }
 
             }
 
             if (temporary[i] > (alphabetLength - 1)) {
-
-                // debugging info
-                if (CommonVariables.debug == true) {
-                    System.out.println("rotor " + i + " exceeded max alphabet length and is being reset");
-                }
 
                 if ((rotorPosition.length - 1) != i) {
                     rotorPosition[i + 1]++;
@@ -57,28 +57,28 @@ public class Encrypting {
 
                     // debugging info
                     if (CommonVariables.debug == true) {
-                        System.out.println("rotor " + (i + 1) + " increased by 1 due to rotor " + i
-                                + " exceeding max alphabet length");
+                        System.out.print("rotor " + (i + 1) + " increased by 1 due to rotor " + i
+                                + " exceeding max length |");
                     }
 
                 } else {
-                    rotorPosition[0]++; // If the last rotor exceeds, the first rotor will increase by 1
                     packageReturn[i] = temporary[i] % alphabetLength;
+
                     if (CommonVariables.debug == true) {
-                        System.out.println("Last rotor exceeded max alphabet length, resetting to "
-                                + packageReturn[i] + " and increasing first rotor to "
-                                + (stepping[0] + packageReturn[i]));
+                        System.out.print("Last rotor exceeded max length, resetting to "
+                                + packageReturn[i] + " |");
                     }
                 }
             } else {
                 packageReturn[i] = temporary[i];
                 if (CommonVariables.debug == true) {
-                    System.out.println("rotor " + i + " set to position " + packageReturn[i]);
+                    System.out.print(" set to position " + packageReturn[i] + " |");
                 }
             }
             i++;
         }
-        return packageReturn; // The new updated Rotor Positions
+        return packageReturn; // The new updated Rotor
+                              // Positions
     }
 
     /**
@@ -144,6 +144,7 @@ public class Encrypting {
         int xyz = 0;
         int forEachCondition = 0;
         boolean willSkip = true;
+
         for (int i = 0; i < toBeEncrypted.length; i++) {
 
             if (cksc.conditions() != null) {
@@ -196,10 +197,20 @@ public class Encrypting {
                 }
 
                 rotorFinalOutputValue[i] = rotorOutput;
+                if (CommonVariables.debug == true) {
+                    System.out.println(
+                            "Symbol " + i + " in: " + SymbolTransformer.mapIndexToSymbol(toBeEncrypted[i]) + " out: "
+                                    + SymbolTransformer.mapIndexToSymbol(rotorFinalOutputValue[i]));
+                }
             }
         }
 
         encryptedSymbol = rotorFinalOutputValue;
+        if (CommonVariables.debug == true) {
+            System.out.println("");
+            System.out.println("--- Encrypted Symbols ---");
+            System.out.println("");
+        }
 
         return encryptedSymbol;
     }

@@ -1,5 +1,8 @@
 package command;
 
+import cipherCore.cipherKeyProcessing.CipherKeyAssembler;
+import cipherCore.cipherKeyProcessing.CipherKeyGenerator;
+
 public class OperationalStatusCommand implements Command {
     public String name() {
         return "-os";

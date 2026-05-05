@@ -23,12 +23,6 @@ public class InputCipherKeyCommand implements Command {
         return "Used for inputting CipherKeys";
     }
 
-    private final LineReader reader;
-
-    public InputCipherKeyCommand(LineReader reader) {
-        this.reader = reader;
-    }
-
     public void execute(String[] args) {
 
         String cipherKey = reader.readLine("Input CipherKey: > ");
