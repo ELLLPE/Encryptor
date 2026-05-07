@@ -3,6 +3,7 @@ package cipherCore.cipherKeyProcessing;
 import java.util.ArrayList;
 import CipherData.CipherKeyCache;
 import CipherData.CipherKeyCacheStore;
+import cipherCore.CommonVariables;
 import cipherDataHandling.characterCodec.CharacterCodecRepository;
 import cipherDataHandling.characterCodec.CharacterCodecService;
 import console.ConsoleOutput;
@@ -83,11 +84,17 @@ public class CipherKeyProcessing {
 
         validateCombiningLength(stopPos, arrayListInput.size());
 
+        if (CommonVariables.debug) {
+            ConsoleOutput.printDebugInfo("Combining next " + stopPos + " integers from cipher key segment...");
+        }
+
         arrayListInput.removeFirst();
         int x = 0;
         for (int i = 0; i < stopPos; i++) {
             int y = (int) Math.pow(10, (stopPos - 1) - i);
-            System.out.println("Combining Value: " + arrayListInput.getFirst() + " * " + y);
+            if (CommonVariables.debug) {
+                ConsoleOutput.printDebugInfo("Combining Value: " + arrayListInput.getFirst() + " * " + y);
+            }
             x += arrayListInput.getFirst() * y;
             arrayListInput.removeFirst();
         }
@@ -127,6 +134,11 @@ public class CipherKeyProcessing {
             cipherKeyInteger.removeFirst();
             startStep[i] = cipherKeyInteger.getFirst();
             cipherKeyInteger.removeFirst();
+
+            if (CommonVariables.debug) {
+                ConsoleOutput.printDebugInfo("Extracted stepping for rotor " + i + ": " + stepping[i]);
+                ConsoleOutput.printDebugInfo("Extracted start step for rotor " + i + ": " + startStep[i]);
+            }
 
             Combining pm = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
             permutationMap[i] = pm.value % permutationMapAmount;

@@ -23,6 +23,10 @@ public class ConsoleOutput {
         print(message, AttributedStyle.GREEN);
     }
 
+    public static void printCriticalInfo(String message) {
+        print(message, AttributedStyle.RED);
+    }
+
     public static void printEssentialInfo(String message) {
         print(message, AttributedStyle.BLUE);
     }

@@ -1,6 +1,7 @@
 package cipherCore;
 
 import CipherData.CipherKeySegmentCache;
+import console.ConsoleOutput;
 
 public class Encrypting {
 
@@ -25,26 +26,34 @@ public class Encrypting {
      * @return
      */
     private int[] rotorPositionUpdating(int[] rotorPosition, int[] stepping) {
-        int i = 0;
+
+        for (int i = 0; i < rotorPosition.length; i++) {
+            if (CommonVariables.debug == true) {
+                ConsoleOutput.printInfo(
+                        "rotor " + i + " position: " + rotorPosition[i] + " Stepping: " + stepping[i] + " |");
+            }
+        }
+
         int[] temporary = new int[rotorPosition.length];
         int[] packageReturn = new int[rotorPosition.length];
 
-        while (i < rotorPosition.length) {
+        for (int i = 0; i < rotorPosition.length; i++) {
 
             if (CommonVariables.debug == true) {
-                System.out.print("rotor " + i + " position: " + rotorPosition[i] + " Stepping: " + stepping[i] + " |");
+                ConsoleOutput.printEssentialInfo(
+                        "rotor " + i + " position: " + rotorPosition[i] + " Stepping: " + stepping[i] + " |");
             }
 
             if (stepping[i] != 0) {
                 temporary[i] = (stepping[i] + rotorPosition[i]);
                 if (CommonVariables.debug == true) {
-                    System.out.print(" updated |");
+                    ConsoleOutput.printEssentialInfo(" updated |");
                 }
 
             } else {
                 temporary[i] = rotorPosition[i];
                 if (CommonVariables.debug == true) {
-                    System.out.print(" did not update |");
+                    ConsoleOutput.printEssentialInfo(" did not update |");
                 }
 
             }
@@ -57,7 +66,7 @@ public class Encrypting {
 
                     // debugging info
                     if (CommonVariables.debug == true) {
-                        System.out.print("rotor " + (i + 1) + " increased by 1 due to rotor " + i
+                        ConsoleOutput.printCriticalInfo("rotor " + (i + 1) + " increased by 1 due to rotor " + i
                                 + " exceeding max length |");
                     }
 
@@ -65,17 +74,17 @@ public class Encrypting {
                     packageReturn[i] = temporary[i] % alphabetLength;
 
                     if (CommonVariables.debug == true) {
-                        System.out.print("Last rotor exceeded max length, resetting to "
+                        ConsoleOutput.printEssentialInfo("Last rotor exceeded max length, resetting to "
                                 + packageReturn[i] + " |");
                     }
                 }
             } else {
                 packageReturn[i] = temporary[i];
                 if (CommonVariables.debug == true) {
-                    System.out.print(" set to position " + packageReturn[i] + " |");
+                    ConsoleOutput.printEssentialInfo(" set to position " + packageReturn[i] + " |");
+
                 }
             }
-            i++;
         }
         return packageReturn; // The new updated Rotor
                               // Positions
@@ -197,8 +206,8 @@ public class Encrypting {
                 }
 
                 rotorFinalOutputValue[i] = rotorOutput;
-                if (CommonVariables.debug == true) {
-                    System.out.println(
+                if (CommonVariables.debug) {
+                    ConsoleOutput.printLnError(
                             "Symbol " + i + " in: " + SymbolTransformer.mapIndexToSymbol(toBeEncrypted[i]) + " out: "
                                     + SymbolTransformer.mapIndexToSymbol(rotorFinalOutputValue[i]));
                 }
@@ -206,9 +215,9 @@ public class Encrypting {
         }
 
         encryptedSymbol = rotorFinalOutputValue;
-        if (CommonVariables.debug == true) {
+        if (CommonVariables.debug) {
             System.out.println("");
-            System.out.println("--- Encrypted Symbols ---");
+            ConsoleOutput.printLnError("--- Encrypted Symbols ---");
             System.out.println("");
         }
 
