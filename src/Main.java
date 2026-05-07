@@ -9,7 +9,7 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 
-import command.Console;
+import console.Console;
 
 public class Main {
 
@@ -17,7 +17,7 @@ public class Main {
         @Override
         public AttributedString highlight(LineReader reader, String buffer) {
             // Apply green color to the entire buffer
-            return new AttributedString(buffer, AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN));
+            return new AttributedString(buffer, AttributedStyle.DEFAULT.foreground(AttributedStyle.CYAN));
         }
     };
 
@@ -33,6 +33,7 @@ public class Main {
         console.register(new command.OperationalStatusCommand());
         console.register(new command.InputCipherKeyCommand(reader));
         console.register(new command.RunCipherCommand(reader));
+        console.register(new command.CipherKeyGeneratorCommand());
         console.start();
     }
 }

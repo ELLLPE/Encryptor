@@ -2,8 +2,10 @@ package command;
 
 import cipherCore.CipherManager;
 import cipherCore.SymbolTransformer;
+import console.ConsoleOutput;
 
 import org.jline.reader.LineReader;
+import org.jline.utils.AttributedStyle;
 
 public class RunCipherCommand implements Command {
     private final LineReader reader;
@@ -25,23 +27,35 @@ public class RunCipherCommand implements Command {
     }
 
     public void execute(String[] args) {
-        System.out.println("Cipher Condition: either <Encrypt> or <Decrypt>");
-        String condition = reader.readLine("|en| or |de| > ");
-        boolean isDecrypt = false;
-        if (condition.equals("de")) {
-            isDecrypt = true;
+        try {
+            ConsoleOutput.printLnInfo("Cipher Condition: either <Encrypt> or <Decrypt>");
+
+            String condition = reader.readLine(ConsoleOutput.colorize("|en| or |de| ", AttributedStyle.YELLOW) + "> ")
+                    .trim().toLowerCase();
+            boolean isDecrypt = false;
+            if (condition.equals("de")) {
+                isDecrypt = true;
+            }
+            ConsoleOutput.printLnInfo("Cipher Condition: " + isDecrypt);
+
+            try {
+                String content = reader
+                        .readLine(ConsoleOutput.colorize("Input Content: ", AttributedStyle.YELLOW) + "> ");
+
+                ConsoleOutput.printLnInfo("Content: " + content);
+
+                CipherManager x = new CipherManager();
+                int[][] symbolMap = SymbolTransformer.mapSymbolToIndex(content.toCharArray());
+
+                ConsoleOutput.printLnInfo("Running Cipher...");
+                ConsoleOutput.printEssentialInfo(
+                        SymbolTransformer.mapIndexToSymbol(x.runCipher(symbolMap[0], isDecrypt), symbolMap[1]));
+                ConsoleOutput.printLnInfo("<End>");
+            } catch (Exception e) {
+                ConsoleOutput.printLnError("An error occurred while running the cipher: ");
+            }
+        } catch (Exception e) {
+            ConsoleOutput.printLnError("An error occurred: ");
         }
-        System.out.println("Cipher Condition: " + isDecrypt);
-
-        String content = reader.readLine("Input Content: > ");
-
-        System.out.println("Content: " + content);
-
-        CipherManager x = new CipherManager();
-        int[][] symbolMap = SymbolTransformer.mapSymbolToIndex(content.toCharArray());
-
-        System.out.println("Running Cipher...");
-        System.out.print(SymbolTransformer.mapIndexToSymbol(x.runCipher(symbolMap[0], isDecrypt), symbolMap[1]));
-        System.out.println("<:Output");
     }
 }

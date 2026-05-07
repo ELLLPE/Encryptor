@@ -1,9 +1,11 @@
-package command;
+package console;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jline.reader.LineReader;
+
+import command.Command;
 
 public class Console {
     private final LineReader reader;

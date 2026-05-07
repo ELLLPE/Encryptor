@@ -1,7 +1,12 @@
 package command;
 
+import java.io.Console;
+
+import org.jline.utils.AttributedStyle;
+
 import cipherCore.cipherKeyProcessing.CipherKeyAssembler;
 import cipherCore.cipherKeyProcessing.CipherKeyGenerator;
+import console.ConsoleOutput;
 
 public class OperationalStatusCommand implements Command {
     public String name() {
@@ -17,11 +22,6 @@ public class OperationalStatusCommand implements Command {
     }
 
     public void execute(String[] args) {
-        System.out.println("Encryptor is operational and ready to use.");
-
-        String x = CipherKeyAssembler.cipherKeyAssembly(CipherKeyGenerator.generateWithSeed(1335346477756400083L));
-
-        System.out.println("Cipher Key -> : " + x);
-
+        ConsoleOutput.printLnInfo("Encryptor is operational and ready to use.");
     }
 }

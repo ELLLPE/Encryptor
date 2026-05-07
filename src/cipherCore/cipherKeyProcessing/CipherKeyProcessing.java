@@ -5,6 +5,7 @@ import CipherData.CipherKeyCache;
 import CipherData.CipherKeyCacheStore;
 import cipherDataHandling.characterCodec.CharacterCodecRepository;
 import cipherDataHandling.characterCodec.CharacterCodecService;
+import console.ConsoleOutput;
 
 class CipherKeySegmenter {
     ArrayList<Integer> leftOverCipherKey;
@@ -213,8 +214,7 @@ public class CipherKeyProcessing {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("");
-                System.err.println("Sowwy :3, No wowky");
+                ConsoleOutput.printLnError("Sowwy :3, No wowky");
 
             }
         }
@@ -234,8 +234,7 @@ public class CipherKeyProcessing {
             x.cipherKeyReader(cipherKey);
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println();
-            System.err.println("Failed to run CipherKeyReader");
+            ConsoleOutput.printLnError("Failed to run CipherKeyReader");
         }
 
     }
