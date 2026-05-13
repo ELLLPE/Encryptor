@@ -26,7 +26,6 @@ class CipherKeySegmenter {
         decKeySegPermutationMap = permutationMap;
         decKeySegConditions = conditions;
         decKeySegConReset = conditionReset;
-
     }
 }
 
@@ -44,6 +43,12 @@ class Combining {
  * 
  */
 public class CipherKeyProcessing {
+
+    private int permutationMapAmount;
+
+    public CipherKeyProcessing(int permutationMapAmount) {
+        this.permutationMapAmount = permutationMapAmount;
+    }
 
     private static final int MAX_COMBINING_DIGITS = 20;
     private static final int MAX_ROTOR_COUNT = 2048;
@@ -103,6 +108,32 @@ public class CipherKeyProcessing {
 
     }
 
+    private static ArrayList<Integer> rotorReader(ArrayList<Integer> cipherKeyInteger, int rotorCount) {
+
+        int[] stepping = new int[rotorCount];
+        int[] startStep = new int[rotorCount];
+        int[] permutationMap = new int[rotorCount];
+
+        for (int i = 0; i < rotorCount; i++) {
+
+            //
+            stepping[i] = cipherKeyInteger.getFirst(); // Extracting the "Key" part or the most important.
+            cipherKeyInteger.removeFirst();
+            startStep[i] = cipherKeyInteger.getFirst();
+            cipherKeyInteger.removeFirst();
+
+            if (CommonVariables.debug) {
+                ConsoleOutput.printDebugInfo("Extracted stepping for rotor " + i + ": " + stepping[i]);
+                ConsoleOutput.printDebugInfo("Extracted start step for rotor " + i + ": " + startStep[i]);
+            }
+
+            Combining pm = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
+            permutationMap[i] = pm.value % cipherKeyProcessing.permutationMapAmount;
+
+            cipherKeyInteger = pm.leftOverArrayListInput;
+        }
+    }
+
     /**
      * 
      * @param cipherKeyInteger
@@ -123,28 +154,9 @@ public class CipherKeyProcessing {
 
         validateRotorCount(rotor.value, cipherKeyInteger.size());
 
-        int[] stepping = new int[rotor.value];
-        int[] startStep = new int[rotor.value];
-        int[] permutationMap = new int[rotor.value];
+        
 
-        for (int i = 0; i < rotor.value; i++) {
-
-            //
-            stepping[i] = cipherKeyInteger.getFirst(); // Extracting the "Key" part or the most important.
-            cipherKeyInteger.removeFirst();
-            startStep[i] = cipherKeyInteger.getFirst();
-            cipherKeyInteger.removeFirst();
-
-            if (CommonVariables.debug) {
-                ConsoleOutput.printDebugInfo("Extracted stepping for rotor " + i + ": " + stepping[i]);
-                ConsoleOutput.printDebugInfo("Extracted start step for rotor " + i + ": " + startStep[i]);
-            }
-
-            Combining pm = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
-            permutationMap[i] = pm.value % permutationMapAmount;
-
-            cipherKeyInteger = pm.leftOverArrayListInput;
-        }
+        // removed rotor reader
 
         // returns the information if there is no conditions
         if (conditionContent == 0) {
@@ -185,6 +197,13 @@ public class CipherKeyProcessing {
                 conditions, 0);
     }
 
+    private void validateCipherKey(String cipherKey) {
+        if (cipherKey == null || cipherKey.isEmpty()) {
+            throw new IllegalArgumentException("Cipher key cannot be null or empty");
+        }
+        // Add more validation rules as needed, such as allowed characters, format, etc.
+    }
+
     /**
      * 
      * @param cipherKey
@@ -192,27 +211,31 @@ public class CipherKeyProcessing {
     private void cipherKeyReader(String cipherKey) {
 
         //
+
+        if (cipherKey.length() > CommonVariables.maxCipherKeyLength) {
+            throw new IllegalArgumentException("Cipher key length exceeds maximum allowed: " + CommonVariables.maxCipherKeyLength);
+            // add a feature in future to split the cipher key into multiple parts if it exceeds the maximum length, and process them sequentially or in parallel.
+        }
+
         ArrayList<Integer> cipherKeyInteger = new ArrayList<Integer>();
         int[] mappedKey = CipherKeyProcessing.symbolMappingToIndex(cipherKey);
         for (int i = 0; i < mappedKey.length; i++) {
             cipherKeyInteger.add(mappedKey[i]);
         }
 
-        if (cipherKeyInteger.size() < 11)
-            throw new IllegalArgumentException("CipherKey To Short!");
-
+        
         //
-        Combining cipKey = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
-        cipherKeyInteger = cipKey.leftOverArrayListInput;
+        Combining cipKeyAmount = getCombining(cipherKeyInteger, cipherKeyInteger.getFirst());
+        cipherKeyInteger = cipKeyAmount.leftOverArrayListInput;
 
-        int[] deflector = new int[cipKey.value];
-        int[][] stepping = new int[cipKey.value][];
-        int[][] stepStart = new int[cipKey.value][];
-        int[][] permutationMap = new int[cipKey.value][];
-        int[][] conditions = new int[cipKey.value][];
-        int[] conditionResets = new int[cipKey.value];
+        int[] deflector = new int[cipKeyAmount.value];
+        int[][] stepping = new int[cipKeyAmount.value][];
+        int[][] stepStart = new int[cipKeyAmount.value][];
+        int[][] permutationMap = new int[cipKeyAmount.value][];
+        int[][] conditions = new int[cipKeyAmount.value][];
+        int[] conditionResets = new int[cipKeyAmount.value];
 
-        for (int i = 0; i < cipKey.value; i++) {
+        for (int i = 0; i < cipKeyAmount.value; i++) {
             try {
                 CipherKeySegmenter segment = getCipherKeySegmenter(cipherKeyInteger);
                 deflector[i] = segment.deflector;
@@ -252,3 +275,4 @@ public class CipherKeyProcessing {
     }
 
 }
+<

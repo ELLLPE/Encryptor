@@ -9,4 +9,6 @@ public class CommonVariables {
 
         public static boolean experimental = false;
 
+        public static int maxCipherKeyLength = 1000000;
+
 }
